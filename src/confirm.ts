@@ -1,4 +1,9 @@
-import { createHash } from "node:crypto";
+import { createHmac, randomBytes } from "node:crypto";
+
+// Per-process secret: the token can only come from a preview this server
+// produced, so a model (or text injected into its context) can't precompute
+// one and skip the preview step. Tokens die when the server restarts.
+const CONFIRM_KEY = randomBytes(32);
 
 // Stable stringify — sorts object keys recursively so token computation is
 // order-independent. Arrays keep their order (order is semantically meaningful).
@@ -29,5 +34,5 @@ function stableStringify(value: unknown): string {
  * Date and class instances are not meaningfully distinguished (collapse to {}) and should not be passed.
  */
 export function computeConfirmToken(payload: unknown): string {
-  return createHash("sha256").update(stableStringify(payload)).digest("hex").slice(0, 16);
+  return createHmac("sha256", CONFIRM_KEY).update(stableStringify(payload)).digest("hex").slice(0, 32);
 }

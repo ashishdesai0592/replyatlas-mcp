@@ -1,6 +1,6 @@
 import { z } from "zod";
 import type { ApiClient } from "../client.js";
-import { guard, type ToolDef } from "../tool.js";
+import { guard, idSchema, pathId, type ToolDef } from "../tool.js";
 
 const TRIGGER = z.enum([
   "COMMENT",
@@ -61,10 +61,10 @@ export function automationTools(client: ApiClient): ToolDef[] {
       config: {
         title: "Get automation",
         description: "Fetch a single automation by id.",
-        inputSchema: { id: z.string().min(1) },
+        inputSchema: { id: idSchema },
         annotations: { readOnlyHint: true },
       },
-      handler: (args) => guard(() => client.get(`/api/v1/automations/${args.id}`)),
+      handler: (args) => guard(() => client.get(`/api/v1/automations/${pathId(args.id)}`)),
     },
     {
       name: "create_automation",
@@ -108,7 +108,7 @@ export function automationTools(client: ApiClient): ToolDef[] {
         description:
           "Update fields on an existing automation. Only provided fields change. Set `active:false` to pause, `active:true` to resume.",
         inputSchema: {
-          id: z.string().min(1),
+          id: idSchema,
           name: z.string().min(1).max(100).optional(),
           active: z.boolean().optional(),
           triggerType: TRIGGER.optional(),
@@ -122,7 +122,7 @@ export function automationTools(client: ApiClient): ToolDef[] {
       },
       handler: (args) =>
         guard(() =>
-          client.patch(`/api/v1/automations/${args.id}`, pickDefined(args, EDITABLE)),
+          client.patch(`/api/v1/automations/${pathId(args.id)}`, pickDefined(args, EDITABLE)),
         ),
     },
     {
@@ -130,10 +130,10 @@ export function automationTools(client: ApiClient): ToolDef[] {
       config: {
         title: "Delete automation",
         description: "Permanently delete an automation by id. This cannot be undone.",
-        inputSchema: { id: z.string().min(1) },
+        inputSchema: { id: idSchema },
         annotations: { readOnlyHint: false, destructiveHint: true },
       },
-      handler: (args) => guard(() => client.del(`/api/v1/automations/${args.id}`)),
+      handler: (args) => guard(() => client.del(`/api/v1/automations/${pathId(args.id)}`)),
     },
   ];
 }

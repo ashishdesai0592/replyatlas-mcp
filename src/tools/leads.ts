@@ -1,6 +1,6 @@
 import { z } from "zod";
 import type { ApiClient } from "../client.js";
-import { guard, type ToolDef } from "../tool.js";
+import { guard, idSchema, pathId, type ToolDef } from "../tool.js";
 
 export function leadTools(client: ApiClient): ToolDef[] {
   return [
@@ -41,10 +41,10 @@ export function leadTools(client: ApiClient): ToolDef[] {
       config: {
         title: "Get lead",
         description: "Fetch a single lead by id (includes activity).",
-        inputSchema: { id: z.string().min(1) },
+        inputSchema: { id: idSchema },
         annotations: { readOnlyHint: true },
       },
-      handler: (args) => guard(() => client.get(`/api/v1/leads/${args.id}`)),
+      handler: (args) => guard(() => client.get(`/api/v1/leads/${pathId(args.id)}`)),
     },
     {
       name: "list_tags",
@@ -63,11 +63,11 @@ export function leadTools(client: ApiClient): ToolDef[] {
         title: "Tag a lead",
         description:
           "Attach an existing tag to a lead. `tagId` must be an id from list_tags (this does not create tags).",
-        inputSchema: { id: z.string().min(1), tagId: z.string().min(1) },
+        inputSchema: { id: idSchema, tagId: idSchema },
         annotations: { readOnlyHint: false },
       },
       handler: (args) =>
-        guard(() => client.post(`/api/v1/leads/${args.id}/tags`, { tagId: args.tagId })),
+        guard(() => client.post(`/api/v1/leads/${pathId(args.id)}/tags`, { tagId: args.tagId })),
     },
     {
       name: "export_leads",

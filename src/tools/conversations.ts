@@ -1,6 +1,6 @@
 import { z } from "zod";
 import type { ApiClient } from "../client.js";
-import { guard, ok, type ToolDef } from "../tool.js";
+import { guard, ok, idSchema, pathId, type ToolDef } from "../tool.js";
 import { computeConfirmToken } from "../confirm.js";
 
 export function conversationTools(client: ApiClient): ToolDef[] {
@@ -36,7 +36,7 @@ export function conversationTools(client: ApiClient): ToolDef[] {
         description:
           "Send a DM reply in a conversation. SAFETY: call once with {id, text} to get a preview and a confirmToken; call again with the same id, text, AND confirmToken to actually send. Requires a plan that includes the human-agent inbox.",
         inputSchema: {
-          id: z.string().min(1),
+          id: idSchema,
           text: z.string().min(1).max(1000),
           confirmToken: z
             .string()
@@ -60,7 +60,7 @@ export function conversationTools(client: ApiClient): ToolDef[] {
           });
         }
         return guard(() =>
-          client.post(`/api/v1/conversations/${payload.id}/reply`, { text: payload.text }),
+          client.post(`/api/v1/conversations/${pathId(payload.id)}/reply`, { text: payload.text }),
         );
       },
     },

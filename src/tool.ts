@@ -21,6 +21,24 @@ export interface ToolDef {
   handler: (args: Record<string, unknown>) => Promise<ToolResult>;
 }
 
+// Ids are interpolated into REST paths. Restrict them to the characters real
+// ids use (cuid / uuid) so a model-supplied value like "../broadcasts/x/send?"
+// can't re-target the request to another endpoint (e.g. sending a broadcast
+// without the confirm step). pathId() re-checks and URL-encodes at the call
+// site as a second layer, in case a handler is ever reached without the schema.
+const ID_RE = /^[A-Za-z0-9_-]{1,128}$/;
+
+export const idSchema = z
+  .string()
+  .regex(ID_RE, "Invalid id: use the id exactly as returned by a list_* tool.");
+
+export function pathId(id: unknown): string {
+  if (typeof id !== "string" || !ID_RE.test(id)) {
+    throw new Error("Invalid id: use the id exactly as returned by a list_* tool.");
+  }
+  return encodeURIComponent(id);
+}
+
 export function ok(data: unknown): ToolResult {
   const text = typeof data === "string" ? data : JSON.stringify(data, null, 2);
   return { content: [{ type: "text", text }] };

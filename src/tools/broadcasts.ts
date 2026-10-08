@@ -1,6 +1,6 @@
 import { z } from "zod";
 import type { ApiClient } from "../client.js";
-import { guard, ok, type ToolDef } from "../tool.js";
+import { guard, ok, idSchema, pathId, type ToolDef } from "../tool.js";
 import { computeConfirmToken } from "../confirm.js";
 
 export function broadcastTools(client: ApiClient): ToolDef[] {
@@ -52,7 +52,7 @@ export function broadcastTools(client: ApiClient): ToolDef[] {
         description:
           "Send a DRAFT broadcast to its audience. SAFETY: call once with {broadcastId} to preview the recipient counts and get a confirmToken; call again with the same broadcastId AND confirmToken to actually send. Requires the Pro plan.",
         inputSchema: {
-          broadcastId: z.string().min(1),
+          broadcastId: idSchema,
           confirmToken: z
             .string()
             .optional()
@@ -72,7 +72,7 @@ export function broadcastTools(client: ApiClient): ToolDef[] {
             targeted: number;
             eligible: number;
             skipped: number;
-          }>(`/api/v1/broadcasts/${broadcastId}/preview`);
+          }>(`/api/v1/broadcasts/${pathId(broadcastId)}/preview`);
           if (args.confirmToken !== token) {
             return ok({
               preview,
@@ -80,7 +80,7 @@ export function broadcastTools(client: ApiClient): ToolDef[] {
               next: "Call send_broadcast again with this confirmToken to send.",
             });
           }
-          const result = await client.post(`/api/v1/broadcasts/${broadcastId}/send`);
+          const result = await client.post(`/api/v1/broadcasts/${pathId(broadcastId)}/send`);
           return ok({ sent: true, preview, result });
         } catch (e) {
           return guard(async () => {

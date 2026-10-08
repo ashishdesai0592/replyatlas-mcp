@@ -21,12 +21,12 @@ describe("computeConfirmToken", () => {
   });
 
   it("returns a short hex token", () => {
-    expect(computeConfirmToken({ x: 1 })).toMatch(/^[0-9a-f]{16}$/);
+    expect(computeConfirmToken({ x: 1 })).toMatch(/^[0-9a-f]{32}$/);
   });
 
   it("handles undefined without throwing", () => {
     const token = computeConfirmToken(undefined);
-    expect(token).toMatch(/^[0-9a-f]{16}$/);
+    expect(token).toMatch(/^[0-9a-f]{32}$/);
   });
 
   it("produces distinct tokens for null vs undefined", () => {

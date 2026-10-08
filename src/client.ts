@@ -56,6 +56,9 @@ export class ApiClient {
   }
 
   private buildUrl(path: string, query?: Record<string, unknown>): string {
+    if (!path.startsWith("/api/v1/") || path.includes("..") || path.includes("?") || path.includes("#")) {
+      throw new ApiError(400, "invalid_path", "Refusing to call an invalid API path.");
+    }
     const url = new URL(path, this.baseUrl);
     if (query) {
       for (const [k, v] of Object.entries(query)) {
