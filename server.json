@@ -1,0 +1,38 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.ashishdesai0592/replyatlas",
+  "title": "ReplyAtlas",
+  "description": "Manage Instagram comment-to-DM automations, leads, analytics, conversations and broadcasts.",
+  "repository": {
+    "url": "https://github.com/ashishdesai0592/replyatlas-mcp",
+    "source": "github"
+  },
+  "websiteUrl": "https://replyatlas.com/integrations/mcp",
+  "version": "0.1.2",
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "replyatlas-mcp",
+      "version": "0.1.2",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "name": "REPLYATLAS_API_KEY",
+          "description": "ReplyAtlas API key (mf_live_…), created in ReplyAtlas → Settings → API Keys on a plan with API access.",
+          "isRequired": true,
+          "isSecret": true,
+          "format": "string"
+        },
+        {
+          "name": "REPLYATLAS_BASE_URL",
+          "description": "Override the API base URL. Defaults to https://replyatlas.com.",
+          "isRequired": false,
+          "isSecret": false,
+          "format": "string"
+        }
+      ]
+    }
+  ]
+}

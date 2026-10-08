@@ -1,0 +1,59 @@
+{
+  "name": "replyatlas-mcp",
+  "version": "0.1.2",
+  "mcpName": "io.github.ashishdesai0592/replyatlas",
+  "publishConfig": {
+    "access": "public"
+  },
+  "description": "ReplyAtlas MCP server — manage Instagram comment-to-DM automations, leads, analytics, conversations and broadcasts from Claude, Cursor or any MCP client.",
+  "keywords": [
+    "mcp",
+    "mcp-server",
+    "model-context-protocol",
+    "instagram",
+    "instagram-automation",
+    "dm-automation",
+    "comment-to-dm",
+    "claude",
+    "cursor",
+    "replyatlas"
+  ],
+  "homepage": "https://replyatlas.com/integrations/mcp",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ashishdesai0592/replyatlas-mcp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ashishdesai0592/replyatlas-mcp/issues"
+  },
+  "license": "MIT",
+  "author": "ReplyAtlas (https://replyatlas.com)",
+  "type": "module",
+  "bin": {
+    "replyatlas-mcp": "dist/index.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "prepublishOnly": "pnpm build"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.0",
+    "zod": "^3.25.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "tsup": "^8.2.0",
+    "typescript": "^5.5.0",
+    "vitest": "^2.0.0"
+  }
+}
